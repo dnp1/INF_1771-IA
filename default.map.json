@@ -1,0 +1,83 @@
+{
+    "start": [36, 36],
+    /*"lock": {"id": "L" }*/
+    "terrenos": {
+        "Montanhoso": {
+            "id": "M",
+            "custo": 200
+        },
+        "Plano": {
+            "id": "P",
+            "custo": 1
+        },
+        "Rochoso": {
+            "id": "R",
+            "custo": 5
+        },
+    },
+    "casas": {
+        "Áries": {
+            "cost": 50,
+            "position": [22, 36]
+        },
+        "Touro": {
+            "cost": 55,
+            "position": [18, 30]
+        },
+        "Gêmeos": {
+            "cost": 60,
+            "position": [34, 30]
+        },
+        "Câncer": {
+            "cost": 70,
+            "position": [25, 23]
+        },
+        "Leão": {
+            "cost": 75,
+            "position": [9, 23]
+        },
+        "Virgem": {
+            "cost": 80,
+            "position": [36, 20]
+        },
+        "Libra": {
+            "cost": 85,
+            "position": [36, 20]
+        },
+        "Escorpião": {
+            "cost": 90,
+            "position": [36, 20]
+        },
+        "Sagitário": {
+            "cost": 95,
+            "position": [36, 20]
+        },
+        "Capricórnio": {
+            "cost": 100,
+            "position": [36, 20]
+        },
+        "Aquário": {
+            "cost": 110,
+            "position": [36, 20]
+        },
+        "Peixes": {
+            "cost": 120,
+            "position": [36, 20]
+        },
+    }
+
+    [
+        ["M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M"],
+        ["M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M"],
+        ["M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M"],
+
+
+        /*END*/
+
+        ["M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M"],
+        ["M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M"],
+        ["M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M"],
+    ],
+
+
+}
