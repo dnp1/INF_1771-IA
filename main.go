@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"strconv"
 )
 
 // Point define a 2-axis coordinate type
@@ -38,19 +41,66 @@ type Map struct {
 	Base    []Line   `json:"base"`
 }
 
+func (m Map) String() string {
+	var buffer bytes.Buffer
+	buffer.WriteString("     ")
+	for i := int64(0); i < 2*int64(len(m.Base)); i = i + 1 {
+		if (i % 20) == 0 {
+			buffer.WriteString(strconv.FormatInt(i/2, 10))
+		} else {
+			buffer.WriteString(" ")
+		}
+	}
+	buffer.WriteString("\n")
+
+	for nl, l := range m.Base {
+		aux := func(nl int) string {
+			if nl >= 10 {
+				return strconv.FormatInt(int64(nl), 10)
+			}
+			return " " + strconv.FormatInt(int64(nl), 10)
+
+		}
+		buffer.WriteString(aux(nl) + ": ")
+		for _, c := range l {
+			buffer.WriteString(" ")
+			switch c {
+			case "M":
+				buffer.WriteString(" ")
+			case "P":
+				buffer.WriteString("~")
+			case "R":
+				buffer.WriteString("=")
+			case "_":
+				buffer.WriteString("T")
+			case "S":
+				buffer.WriteString("S")
+			case "E":
+				buffer.WriteString("E")
+			default:
+				log.Fatalln("Caracter Inválido: ", c)
+			}
+
+		}
+		buffer.WriteString("\n")
+	}
+	return buffer.String()
+}
+
 func main() {
 	content, err := ioutil.ReadFile("default.map.json")
-	//fmt.Println(content)
-	// importMap()
+
 	if err != nil {
-		fmt.Print("Error:", err)
+		fmt.Print("Error (reading file):", err)
+		return
 	}
 	var conf Map
 	err = json.Unmarshal(content, &conf)
+
 	if err != nil {
-		fmt.Println("PUTS")
-		fmt.Println(err)
+		fmt.Println("Error (parsing JSON)", err)
 	}
 
-	fmt.Println(conf)
+	fmt.Println(conf.String())
+	// fmt.Println(conf.Base)
 }
