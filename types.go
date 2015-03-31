@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -51,7 +52,7 @@ func (m Map) String() string {
 			buffer.WriteString(" ")
 		}
 	}
-	buffer.WriteString("\n")
+	buffer.WriteString("\r\n")
 
 	for nl, l := range m.Base {
 		aux := func(nl int) string {
@@ -81,36 +82,42 @@ func (m Map) String() string {
 				log.Fatalln("Caracter Inválido: ", c)
 			}
 		}
-		buffer.WriteString("\n")
+		buffer.WriteString("\r\n")
 	}
 	return buffer.String()
 }
 
 func clear(amount uint64) {
 	for i := uint64(0); i < amount; i++ {
-		os.Stdout.WriteString("\033[H\033[2J")
+		os.Stdout.WriteString("\033[A\033[2K")
 	}
+	os.Stdout.Seek(0, 0)
+	os.Stdout.Truncate(0) /* you probably want this as well */
 	os.Stdout.Sync()
+
 }
 
 // Print the map
-func (m Map) Print() {
-
-	// i, err :=
-
+func (m *Map) Print() {
 	dat := []byte(m.String())
+
+	// rx := r.MustCompile(r.QuoteMeta("\\n\\r"))
+
+	i := uint64(0)
+	strings.Map(func(r rune) rune {
+		if r == '\n' {
+			i = i + 1
+		}
+		return r
+	}, m.String())
+
 	if m.printed {
-		clear(uint64(len(dat)))
+		clear(uint64(i))
+	} else {
+		m.printed = true
 	}
 	os.Stdout.Write(dat)
-	// // os.Stdout.Seek(0, 0)
-	// if i, err := os.Stdout.WriteAt(dat, int64(len(dat))); err != nil {
-	// 	log.Println(i)
-	// 	log.Fatalln(err)
-	// } else {
-	// 	fmt.Println(i)
-	// }
-	os.Stdout.Sync()
-	time.Sleep(2 << 32)
 
+	os.Stdout.Sync()
+	time.Sleep(2 << 31)
 }

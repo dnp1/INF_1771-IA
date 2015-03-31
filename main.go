@@ -22,9 +22,23 @@ func main() {
 
 	conf.Print()
 	//
-
 	conf.Base[1][12] = "_"
+
 	conf.Print()
 
 	// fmt.Println(conf.Base)
+
+	// os.Stdout.WriteString("output1\n")
+	// os.Stdout.WriteString("output2\n")
+	// time.Sleep(2 << 28)
+	// os.Stdout.Sync()
+	// os.Stdout.WriteString("\033[A\033[2K\033[A\033[2K")
+	//
+	// os.Stdout.Seek(0, 0)
+	// os.Stdout.Truncate(1) /* you probably want this as well */
+	// os.Stdout.Sync()
+	//
+	// os.Stdout.WriteString("output3\n")
+	// os.Stdout.WriteString("output4\n")
+	// os.Stdout.Sync()
 }
