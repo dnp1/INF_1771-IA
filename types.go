@@ -82,7 +82,7 @@ func (m Map) String() string {
 				log.Fatalln("Caracter Inválido: ", c)
 			}
 		}
-		buffer.WriteString("\r\n")
+		buffer.WriteString("\n")
 	}
 	return buffer.String()
 }
@@ -101,9 +101,9 @@ func clear(amount uint64) {
 func (m *Map) Print() {
 	dat := []byte(m.String())
 
-	// rx := r.MustCompile(r.QuoteMeta("\\n\\r"))
-
 	i := uint64(0)
+
+	// work around to get all
 	strings.Map(func(r rune) rune {
 		if r == '\n' {
 			i = i + 1
