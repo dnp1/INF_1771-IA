@@ -1,14 +1,15 @@
 package main
 
 import (
-	"encoding/json"
+	"encoding/json"//importing(calling) library json
 	"fmt"
 	"io/ioutil"
 )
 
 func main() {
 	content, err := ioutil.ReadFile("default.map.json")
-
+	//content-> receive the content from default.map.json
+	//err -> receive assert
 	if err != nil {
 		fmt.Print("Error (reading file):", err)
 		return
