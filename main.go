@@ -13,32 +13,24 @@ func main() {
 		fmt.Print("Error (reading file):", err)
 		return
 	}
-	var conf Map
+
+	var conf Environment
 	err = json.Unmarshal(content, &conf)
 
 	if err != nil {
 		fmt.Println("Error (parsing JSON)", err)
 	}
 
-	conf.Print()
-	//
-	conf.Base[1][12] = "_"
+	v1, v2 := buildGraphFromEnv(&conf)
+	fmt.Println(v1.BFS(v2))
+	//	fmt.Println(test)
 
-	conf.Print()
+	// conf.Print()
+	//fmt.Println(conf)
 
-	// fmt.Println(conf.Base)
-
-	// os.Stdout.WriteString("output1\n")
-	// os.Stdout.WriteString("output2\n")
-	// time.Sleep(2 << 28)
-	// os.Stdout.Sync()
-	// os.Stdout.WriteString("\033[A\033[2K\033[A\033[2K")
+	// conf.Print()
+	// //
+	// conf.Map[1][12] = "_"
 	//
-	// os.Stdout.Seek(0, 0)
-	// os.Stdout.Truncate(1) /* you probably want this as well */
-	// os.Stdout.Sync()
-	//
-	// os.Stdout.WriteString("output3\n")
-	// os.Stdout.WriteString("output4\n")
-	// os.Stdout.Sync()
+	// conf.Print()
 }

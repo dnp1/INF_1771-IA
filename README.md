@@ -7,5 +7,3 @@ Repositório criado para a implementação dos trabalhos de IA
 - Alunos:
   * Danilo André do Nascimento Pereira - 1212985
   * Pedro Thiago do Nascimento Santos - 1213243
-  
-

@@ -32,20 +32,20 @@ type Temple struct {
 // Line of a map is just an slice of Cells
 type Line []string
 
-// Map of the game
-type Map struct {
+// Environment of the game
+type Environment struct {
 	Start   Point    `json:"start"`
 	End     Point    `json:"end"`
 	Grounds []Ground `json:"grounds"`
 	Temples []Temple `json:"temples"`
-	Base    []Line   `json:"base"`
+	Map     []Line   `json:"map"`
 	printed bool
 }
 
-func (m Map) String() string {
+func (m Environment) String() string {
 	var buffer bytes.Buffer
 	buffer.WriteString("     ")
-	for i := int64(0); i < 2*int64(len(m.Base)); i = i + 1 {
+	for i := int64(0); i < 2*int64(len(m.Map)); i = i + 1 {
 		if (i % 20) == 0 {
 			buffer.WriteString(strconv.FormatInt(i/2, 10))
 		} else {
@@ -54,14 +54,14 @@ func (m Map) String() string {
 	}
 	buffer.WriteString("\r\n")
 
-	for nl, l := range m.Base {
-		aux := func(nl int) string {
-			if nl >= 10 {
-				return strconv.FormatInt(int64(nl), 10)
-			}
-			return " " + strconv.FormatInt(int64(nl), 10)
-
+	aux := func(nl int) string {
+		if nl >= 10 {
+			return strconv.FormatInt(int64(nl), 10)
 		}
+		return " " + strconv.FormatInt(int64(nl), 10)
+	}
+
+	for nl, l := range m.Map {
 		buffer.WriteString(aux(nl) + ": ")
 		for _, c := range l {
 			buffer.WriteString(" ")
@@ -82,7 +82,7 @@ func (m Map) String() string {
 				log.Fatalln("Caracter Inválido: ", c)
 			}
 		}
-		buffer.WriteString("\n")
+		buffer.WriteString("\r\n")
 	}
 	return buffer.String()
 }
@@ -97,13 +97,14 @@ func clear(amount uint64) {
 
 }
 
+//
 // Print the map
-func (m *Map) Print() {
+func (m *Environment) Print() {
 	dat := []byte(m.String())
 
 	i := uint64(0)
 
-	// work around to get all
+	// work around to get line number
 	strings.Map(func(r rune) rune {
 		if r == '\n' {
 			i = i + 1
