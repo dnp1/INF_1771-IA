@@ -73,6 +73,7 @@ func (v *Square) AStar(finding *Square) []*Square {
 	for {
 
 	}
+
 	fmt.Println(closedSet, openSet, cameFrom, fScore)
 
 	return nil
