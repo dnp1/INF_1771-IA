@@ -3,7 +3,7 @@ package main
 // Vertex ...
 type Vertex interface {
 	Neighbors() []Vertex
-	CostToNeighbor(v Vertex) int64
+	DistanceToNeighbor(v Vertex) int64
 	BFS(finding Vertex) []Vertex
 	Equals(v1 Vertex) bool
 	// DFS(finding Vertex) []Vertex

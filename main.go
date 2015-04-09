@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"//importing(calling) library json
+	"encoding/json" //importing(calling) library json
 	"fmt"
 	"io/ioutil"
 )
