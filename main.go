@@ -23,14 +23,4 @@ func main() {
 
 	v1, v2 := buildGraphFromEnv(&conf)
 	fmt.Println(v1.BFS(v2))
-	//	fmt.Println(test)
-
-	// conf.Print()
-	//fmt.Println(conf)
-
-	// conf.Print()
-	// //
-	// conf.Map[1][12] = "_"
-	//
-	// conf.Print()
 }

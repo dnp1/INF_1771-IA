@@ -14,6 +14,7 @@ func (v *Square) Neighbors() []*Square {
 	return v.neighbors
 }
 
+//Equals Compare two Squares
 func (v *Square) Equals(v1 *Square) bool {
 	adj := v1
 	return adj.p.X == v.p.X && adj.p.Y == v.p.Y
@@ -61,21 +62,65 @@ func (v *Square) BFS(finding *Square) []*Square {
 	return nil
 }
 
-func (v *Square) AStar(finding *Square) []*Square {
+func getMin(o map[*Square]bool, f map[*Square]int64) *Square {
 	var (
-		closedSet = make(map[*Square]bool)
+		best *Square
+		min  int64
+	)
+	for j, flag := range o {
+		if !flag {
+			continue
+		}
+		if f[j] < min {
+			best = j
+		}
+	}
+	return best
+}
+
+// Return reverse Path.
+func reconstructPath(cameFrom map[*Square]*Square, current *Square) []*Square {
+	var path = make([]*Square, 1, 42*42)
+	path[0] = current
+
+	for next, ok := cameFrom[current]; ok; current = next {
+		path = append(path, next)
+	}
+	return path
+}
+
+//AStar ...
+func (v *Square) AStar(goal *Square) []*Square {
+	var (
+		closedSet = make(map[*Square]bool, 42*42)
 		openSet   = map[*Square]bool{v: true}
-		cameFrom  = make(map[*Square]*Square)
-		gScore    = map[*Square]int64{v: 0}
-		fScore    = map[*Square]int64{v: (gScore[v] + v.CostToNeighbor(finding))}
+		cameFrom  = make(map[*Square]*Square, 42*42)
+		gScore    = map[*Square]int64{v: 0} // or v.Cost?
+		fScore    = map[*Square]int64{v: gScore[v] + 0}
 	)
 
-	for {
-
-	}
-
 	fmt.Println(closedSet, openSet, cameFrom, fScore)
+	fmt.Println(len(openSet))
 
+	for len(openSet) > 0 {
+		var current = getMin(openSet, fScore)
+		if current == goal {
+			return reconstructPath(cameFrom, current)
+		}
+		delete(openSet, current)
+		closedSet[current] = true
+
+		for _, adj := range current.Neighbors() {
+			if closedSet[adj] {
+				continue
+			}
+			GScoreTry := gScore[current] + current.CostToNeighbor(adj)
+
+			if !openSet[adj] || GScoreTry < gScore[adj] {
+
+			}
+		}
+	}
 	return nil
 }
 
@@ -109,9 +154,3 @@ func (v *Square) AStar(finding *Square) []*Square {
 //
 //     return failure
 //
-// function reconstruct_path(came_from,current)
-//     total_path := [current]
-//     while current in came_from:
-//         current := came_from[current]
-//         total_path.append(current)
-//     return total_path
