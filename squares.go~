@@ -18,7 +18,7 @@ func (v *Square) Equals(v1 *Square) bool {
 	return neighbor.p.X == v.p.X && neighbor.p.Y == v.p.Y
 }
 
-//DistanceToNeighbor ...please, make some (at least simple and direct comment about it!
+//DistanceToNeighbor ...please, make some (at least simple and direct) comment about it!
 //this function searchs for the interessed neighbor(finding) in the current Square, 
 //and return the cost of the neighbor(finding) 
 func (v *Square) DistanceToNeighbor(finding *Square) int64 {
@@ -33,7 +33,6 @@ func (v *Square) DistanceToNeighbor(finding *Square) int64 {
 // BFS ...
 func (v *Square) BFS(finding *Square) []*Square {
 	// var cost = 0
-	//what is SquareQueue???????????????????????????????????????????????????????function,type?
 	var Q = SquareQueue(make([]*Square, 0, 42*42))
 	// var path = SquareQueue(make([]*Square, 0, 42*42))
 	var D = make(map[*Square]bool)

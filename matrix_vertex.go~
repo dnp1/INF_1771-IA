@@ -95,7 +95,7 @@ func buildGraphFromEnv(env *Environment) (*Square, *Square) {
 			v := getOrBuild(env, ref, c, x, y)
 			s := v //why this? why not just using s or v? even because you don't use v in the code anymore
 			if x > 0 { // has top neighbor
-				s.neighbors[TOP] = getOrBuild(env, ref, c, x-1, y)// this shouldn't be... x, y-1) instead ...x-1,y)? after all, you will the neighbor on top, this mean y -1 by convention
+				s.neighbors[TOP] = getOrBuild(env, ref, c, x-1, y)// this shouldn't be... x, y-1) instead ...x-1,y), after all, you will the neighbor on top, this mean y -1 by convention
 			}
 			if y > 0 { // has  left neighbor
 				s.neighbors[LEFT] = getOrBuild(env, ref, c, x, y-1)

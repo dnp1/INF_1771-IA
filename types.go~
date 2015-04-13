@@ -60,8 +60,6 @@ func (m Environment) String() string {
 	aux := func(numlines int) string { //the objective here is print the row numbers aligned
 		if numlines >= 10 { //if true, will print the number higher than 10
 			return strconv.FormatInt(int64(numlines), 10)
-
-
 		} //else, will print a space plus a number lower than 10
 		return " " + strconv.FormatInt(int64(numlines), 10)
 	}
