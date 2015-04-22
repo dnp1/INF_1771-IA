@@ -2,111 +2,119 @@ package main
 
 import "log"
 
-//Matrix ..
+//Matrix is a auxiliary type
+//It is used to build a well connected "*Squares Graph" from a given *Environment
 type Matrix struct {
-	data []*Square
-	m    uint64
-	n    uint64
+	data         []*Square
+	numOfRows    uint64
+	numOfColumns uint64
 }
 
-//NewMatrix
-//i'm sorry being boring but it for your best
-//sometimes is ok to use lazy name, but you must to say what is your intention
-//c'mon man, don't throw out everything you learned in Modular
-func NewMatrix(n, m uint64) *Matrix {
+//NewMatrix is a constructor for a *Matrix
+func NewMatrix(numOfRows, numOfColumns uint64) *Matrix {
 	return &Matrix{
-		data: make([]*Square, n*m),
-		m:    m,//Coluns
-		n:    n,//Row
+		data:         make([]*Square, numOfRows*numOfColumns),
+		numOfRows:    numOfRows,
+		numOfColumns: numOfColumns,
 	}
 }
 
 const (
-	TOP    = 0
-	RIGHT  = 1
-	BOTTOM = 2
-	LEFT   = 3
+	neighborTOP    = 0
+	neighborRIGHT  = 1
+	neighborBOTTOM = 2
+	neighborLEFT   = 3
 )
 
 //note: the matrix is a Slice , then:
 //get(i,0)-> i*mat.m + 0 -> walks i times the m coluns-in the slice-reaching the (i,j) element
-//get(i,j) -> i*mat.m + j -> walks i times the m coluns-in the slice- and walks j elements, to reach(i,j)element 
-func (mat *Matrix) get(i, j uint64) *Square {
-	if i*mat.m+j < uint64(len(mat.data)) {
-		return mat.data[i*mat.m+j]
-	} else {
-		log.Fatalln("Oops:", i*mat.m+j, i, j)
+//get(i,j) -> i*mat.m + j -> walks i times the m coluns-in the slice- and walks j elements, to reach(i,j)element
+func (mat *Matrix) get(row, column uint64) *Square {
+	if row*mat.numOfRows+column < uint64(len(mat.data)) && column < mat.numOfColumns {
+		return mat.data[row*mat.numOfRows+column]
 	}
 	return nil
 }
 
-//i-> row
-//j-> column
-//v -> data
-func (mat *Matrix) set(i uint64, j uint64, v *Square) {
-	mat.data[i*mat.m+j] = v
+//The set method defines a value do a given position (as a [row, column] coordinate)
+func (mat *Matrix) set(row uint64, column uint64, vertexInfo *Square) {
+	mat.data[row*mat.numOfRows+column] = vertexInfo
 }
 
-
-
-
-func getCost(env *Environment, c string, x, y uint64) int64 {
-	if c == "S" {//what is exactly S? it's the end? or start ? it's not defined anywhere in Json 
+// getCost find the fixed-cost to move to a square.
+func getCost(env *Environment, squareID string, x uint64, y uint64) int64 {
+	switch {
+	case env.Start.X == x && env.Start.Y == y: // is start
+		fallthrough // The same action below
+	case env.End.X == x && env.End.Y == y: // is the stop
 		return 0
-	}
-	for _, g := range env.Grounds {//given a ground c, searches in env the ground returning the cost of c 
-		//if t.Position.X == uint64(x) && t.Position.Y == uint64(y) {
-		if g.ID == c {
-			return g.Cost
+	case squareID == "_": // Must be a temple square. otherwise, and error will be emitted!
+		for _, t := range env.Temples { //return cost of the current temple
+			if t.Position.X == uint64(x) && t.Position.Y == uint64(y) {
+				return t.Cost
+			}
 		}
-	}
-	// Temple?
-	if c != "_" {
-		log.Fatalln("oops: Invalid Square at", x, y, "!!!")
-	}
-	for _, t := range env.Temples {//return cost of the current temple
-		if t.Position.X == uint64(x) && t.Position.Y == uint64(y) {
-			return t.Cost
+	default: // Must be a normal ground square, otherwise, and error will be emitted!
+		for _, g := range env.Grounds { //given a square, searches in env the ground returning the cost of c
+			//if t.Position.X == uint64(x) && t.Position.Y == uint64(y) {
+			if g.ID == squareID {
+				return g.Cost
+			}
 		}
+		log.Fatalln("Invalid Ground at", x, y, "!!!\n")
 	}
 	return 0
 }
-//why get or build? why don't you use the get already defined!?
-func getOrBuild(env *Environment, ref *Matrix, g string, x, y uint64) *Square {
-	if v := ref.get(x, y); v != nil {
+
+// getOrBuild function return the same as "Matrix.get" but:
+// it building the info case it was nil
+// it need of env to build env
+func getOrBuild(env *Environment, ref *Matrix, x uint64, y uint64) *Square {
+	if v := ref.get(x, y); v != nil { // If v already are defined we just return it.
 		return v
-	}
+	} // Otherwise, we need build it.
 	s := new(Square)
-	s.Cost = getCost(env, g, x, y)
-	s.p = Point{X: x, Y: y}
+	s.Cost = getCost(env, env.Map[x][y], x, y)
+	s.Position = Point{X: x, Y: y}
 	s.neighbors = make([]*Square, 4)
 	ref.set(x, y, s)
 	return s
 }
 
-// buildGraphFromEnv build a Graph and return the initial and the final Square
-func buildGraphFromEnv(env *Environment) (*Square, *Square) {
-	ref := NewMatrix(42, 42)
+// buildGraphFromEnv build a Graph and return the initial and a slice with goals-squares
+func buildGraphFromEnv(env *Environment) (*Square, []*Square) {
+	var (
+		ref          = NewMatrix(42, 42)
+		destinations = make([]*Square, 0, len(env.Temples)+1)
+	)
+
 	for x, l := range env.Map {
-		for y, c := range l {
-			var x, y = uint64(x), uint64(y)
-//how can you use the variable if you didn't initialize in any instance?
-//i'm sorry asking, but are you testing it?
-			v := getOrBuild(env, ref, c, x, y)
-			s := v //why this? why not just using s or v? even because you don't use v in the code anymore
+		for y, _ := range l {
+			var (
+				x, y = uint64(x), uint64(y)
+				s    = getOrBuild(env, ref, x, y)
+			)
+
 			if x > 0 { // has top neighbor
-				s.neighbors[TOP] = getOrBuild(env, ref, c, x-1, y)// this shouldn't be... x, y-1) instead ...x-1,y)? after all, you will the neighbor on top, this mean y -1 by convention
+				s.neighbors[neighborTOP] = getOrBuild(env, ref, x-1, y) // this shouldn't be... x, y-1) instead ...x-1,y)? after all, you will the neighbor on top, this mean y -1 by convention
 			}
 			if y > 0 { // has  left neighbor
-				s.neighbors[LEFT] = getOrBuild(env, ref, c, x, y-1)
+				s.neighbors[neighborLEFT] = getOrBuild(env, ref, x, y-1)
 			}
 			if x < uint64(len(env.Map)-1) { // has bottom neighbor
-				s.neighbors[BOTTOM] = getOrBuild(env, ref, c, x+1, y)
+				s.neighbors[neighborBOTTOM] = getOrBuild(env, ref, x+1, y)
 			}
 			if y < uint64(len(l)-1) { // has right neighbor
-				s.neighbors[RIGHT] = getOrBuild(env, ref, c, x, y+1)
+				s.neighbors[neighborRIGHT] = getOrBuild(env, ref, x, y+1)
 			}
 		}
 	}
-	return ref.get(env.Start.X, env.Start.Y), ref.get(env.End.X, env.End.Y)
+
+	//filling "destinations" assuming env.Temples are in-order of goalss
+	for _, v := range env.Temples {
+		destinations = append(destinations, ref.get(v.Position.X, v.Position.Y))
+	}
+	destinations = append(destinations, ref.get(env.End.X, env.End.Y))
+
+	return ref.get(env.Start.X, env.Start.Y), destinations
 }

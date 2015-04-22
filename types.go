@@ -18,30 +18,28 @@ type Point struct {
 	Y uint64 `json:"y"`
 }
 
-// Ground is where the characters go by in the map. it has a fixed cost to pass through it
+// Ground is where the characters go by in the map. It has a fixed cost to pass through it
 type Ground struct {
 	Name string `json:"name"`
 	ID   string `json:"id"`
 	Cost int64  `json:"cost"`
 }
 
-// Temple is a special place in the map with fixed cost to pass through it, the cost are little bite higher than the ground because the temple keep the Gold Knights.
+// Temple is a special place in the map with fixed cost to pass through it,
+// Code irrelevante -> the cost are little bite higher than the ground because the temple keep the Gold Knights.
 type Temple struct {
 	Name     string `json:"name"`
 	Cost     int64  `json:"cost"`
 	Position Point  `json:"position"`
 }
 
-// Line of a map is just an slice of Cells
-type Line []string
-
 // Environment of the game
 type Environment struct {
-	Start   Point    `json:"start"`
-	End     Point    `json:"end"`
-	Grounds []Ground `json:"grounds"`
-	Temples []Temple `json:"temples"`
-	Map     []Line   `json:"map"`
+	Start   Point      `json:"start"`
+	End     Point      `json:"end"`
+	Grounds []Ground   `json:"grounds"`
+	Temples []Temple   `json:"temples"`
+	Map     [][]string `json:"map"`
 	printed bool
 }
 
@@ -61,7 +59,6 @@ func (m Environment) String() string {
 		if numlines >= 10 { //if true, will print the number higher than 10
 			return strconv.FormatInt(int64(numlines), 10)
 
-
 		} //else, will print a space plus a number lower than 10
 		return " " + strconv.FormatInt(int64(numlines), 10)
 	}
@@ -80,9 +77,9 @@ func (m Environment) String() string {
 				buffer.WriteString("=")
 			case "_":
 				buffer.WriteString("T")
-			case "S":
+			case "S": //S is not defined
 				buffer.WriteString("S")
-			case "E":
+			case "E": // E is not defined
 				buffer.WriteString("E")
 			default:
 				log.Fatalln("Caracter Inválido: ", c)
