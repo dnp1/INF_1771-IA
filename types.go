@@ -14,8 +14,8 @@ import (
 
 // Point define a 2-axis coordinate type
 type Point struct {
-	X uint64 `json:"x"`
-	Y uint64 `json:"y"`
+	Row    uint64 `json:"row"`
+	Column uint64 `json:"column"`
 }
 
 // Ground is where the characters go by in the map. It has a fixed cost to pass through it
@@ -28,9 +28,9 @@ type Ground struct {
 // Temple is a special place in the map with fixed cost to pass through it,
 // Code irrelevante -> the cost are little bite higher than the ground because the temple keep the Gold Knights.
 type Temple struct {
-	Name     string `json:"name"`
-	Cost     int64  `json:"cost"`
-	Position Point  `json:"position"`
+	Name      string `json:"name"`
+	Dificulty int64  `json:"cost"`
+	Position  Point  `json:"position"`
 }
 
 // Environment of the game

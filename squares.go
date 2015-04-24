@@ -1,5 +1,7 @@
 package main
 
+//import "errors"
+
 // Square ..
 type Square struct {
 	Position  Point
@@ -20,4 +22,5 @@ func (v *Square) DistanceToNeighbor(finding *Square) int64 {
 		}
 	}
 	return -1
+	//, errors.New("Not a Neighbor!")
 }

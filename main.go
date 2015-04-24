@@ -9,7 +9,7 @@ import (
 func main() {
 	content, err := ioutil.ReadFile("default.map.json")
 	//content-> receive the content from default.map.json
-	//err -> receive assert
+	//err -> receive condRet
 	if err != nil {
 		fmt.Print("Error (reading file):", err)
 		return
@@ -22,14 +22,19 @@ func main() {
 		fmt.Println("Error (parsing JSON)", err)
 	}
 
-	origin, goals := buildGraphFromEnv(&conf)
+	origin, goals, _ := buildGraphFromEnv(&conf)
 
 	for _, goal := range goals {
-		res := origin.AStar(goal)
+		res, duration := origin.AStar(goal)
+		_, _ = res, duration
+		fmt.Println('[')
 		for _, v := range res {
-			fmt.Print(v.Position, " ,")
+			fmt.Println(v.Position, ",", v.Cost, conf.Map[v.Position.Column][v.Position.Row])
 		}
-		fmt.Print("\n")
+		fmt.Println(']')
+
+		fmt.Print("Duration:", duration, "\n")
 		origin = goal
+		break
 	}
 }

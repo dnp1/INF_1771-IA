@@ -42,26 +42,26 @@ func (mat *Matrix) set(row uint64, column uint64, vertexInfo *Square) {
 }
 
 // getCost find the fixed-cost to move to a square.
-func getCost(env *Environment, squareID string, x uint64, y uint64) int64 {
+func getCost(env *Environment, squareID string, row uint64, column uint64) int64 {
 	switch {
-	case env.Start.X == x && env.Start.Y == y: // is start
+	case env.Start.Row == row && env.Start.Column == column: // is start
 		fallthrough // The same action below
-	case env.End.X == x && env.End.Y == y: // is the stop
+	case env.End.Row == row && env.End.Column == column: // is the stop
 		return 0
 	case squareID == "_": // Must be a temple square. otherwise, and error will be emitted!
 		for _, t := range env.Temples { //return cost of the current temple
-			if t.Position.X == uint64(x) && t.Position.Y == uint64(y) {
+			if t.Position.Row == uint64(row) && t.Position.Column == uint64(column) {
 				return t.Cost
 			}
 		}
+		log.Fatalln("Invalid Temple at", row, column, "!!!\n")
 	default: // Must be a normal ground square, otherwise, and error will be emitted!
 		for _, g := range env.Grounds { //given a square, searches in env the ground returning the cost of c
-			//if t.Position.X == uint64(x) && t.Position.Y == uint64(y) {
 			if g.ID == squareID {
 				return g.Cost
 			}
 		}
-		log.Fatalln("Invalid Ground at", x, y, "!!!\n")
+		log.Fatalln("Invalid Ground at", row, column, "!!!\n")
 	}
 	return 0
 }
@@ -69,52 +69,52 @@ func getCost(env *Environment, squareID string, x uint64, y uint64) int64 {
 // getOrBuild function return the same as "Matrix.get" but:
 // it building the info case it was nil
 // it need of env to build env
-func getOrBuild(env *Environment, ref *Matrix, x uint64, y uint64) *Square {
-	if v := ref.get(x, y); v != nil { // If v already are defined we just return it.
+func getOrBuild(env *Environment, ref *Matrix, row uint64, column uint64) *Square {
+	if v := ref.get(row, column); v != nil { // If v already are defined we just return it.
 		return v
 	} // Otherwise, we need build it.
 	s := new(Square)
-	s.Cost = getCost(env, env.Map[x][y], x, y)
-	s.Position = Point{X: x, Y: y}
+	s.Cost = getCost(env, env.Map[row][column], row, column)
+	s.Position = Point{Row: row, Column: column}
 	s.neighbors = make([]*Square, 4)
-	ref.set(x, y, s)
+	ref.set(row, column, s)
 	return s
 }
 
 // buildGraphFromEnv build a Graph and return the initial and a slice with goals-squares
-func buildGraphFromEnv(env *Environment) (*Square, []*Square) {
+func buildGraphFromEnv(env *Environment) (*Square, []*Square, *Matrix) {
 	var (
 		ref          = NewMatrix(42, 42)
 		destinations = make([]*Square, 0, len(env.Temples)+1)
 	)
 
-	for x, l := range env.Map {
-		for y, _ := range l {
+	for row, l := range env.Map {
+		for column, _ := range l {
 			var (
-				x, y = uint64(x), uint64(y)
-				s    = getOrBuild(env, ref, x, y)
+				row, column   = uint64(row), uint64(column)
+				currentSquare = getOrBuild(env, ref, row, column)
 			)
 
-			if x > 0 { // has top neighbor
-				s.neighbors[neighborTOP] = getOrBuild(env, ref, x-1, y) // this shouldn't be... x, y-1) instead ...x-1,y)? after all, you will the neighbor on top, this mean y -1 by convention
+			if row > 0 { // has top neighbor
+				currentSquare.neighbors[neighborTOP] = getOrBuild(env, ref, row-1, column)
 			}
-			if y > 0 { // has  left neighbor
-				s.neighbors[neighborLEFT] = getOrBuild(env, ref, x, y-1)
+			if column > 0 { // has  left neighbor
+				currentSquare.neighbors[neighborLEFT] = getOrBuild(env, ref, row, column-1)
 			}
-			if x < uint64(len(env.Map)-1) { // has bottom neighbor
-				s.neighbors[neighborBOTTOM] = getOrBuild(env, ref, x+1, y)
+			if row < uint64(len(env.Map)-1) { // has bottom neighbor
+				currentSquare.neighbors[neighborBOTTOM] = getOrBuild(env, ref, row+1, column)
 			}
-			if y < uint64(len(l)-1) { // has right neighbor
-				s.neighbors[neighborRIGHT] = getOrBuild(env, ref, x, y+1)
+			if column < uint64(len(l)-1) { // has right neighbor
+				currentSquare.neighbors[neighborRIGHT] = getOrBuild(env, ref, row, column+1)
 			}
 		}
 	}
 
 	//filling "destinations" assuming env.Temples are in-order of goalss
 	for _, v := range env.Temples {
-		destinations = append(destinations, ref.get(v.Position.X, v.Position.Y))
+		destinations = append(destinations, ref.get(v.Position.Row, v.Position.Column))
 	}
-	destinations = append(destinations, ref.get(env.End.X, env.End.Y))
+	destinations = append(destinations, ref.get(env.End.Row, env.End.Column))
 
-	return ref.get(env.Start.X, env.Start.Y), destinations
+	return ref.get(env.Start.Row, env.Start.Column), destinations, ref
 }
