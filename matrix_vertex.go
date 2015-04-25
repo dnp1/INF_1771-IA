@@ -51,7 +51,7 @@ func getTempleData(env *Environment, squareID string, row int, column int) *Temp
 		if t.Position.Row == int(row) && t.Position.Column == int(column) {
 			return &TempleInfo{
 				Name:       t.Name,
-				Difficulty: t.Dificulty,
+				Difficulty: t.Difficulty,
 			}
 		}
 	}

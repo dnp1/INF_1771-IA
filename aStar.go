@@ -5,26 +5,39 @@ import (
 	"math"
 )
 
-// heuristicCostEstimate is, currently, just the distance between two pointers
-func heuristicCostEstimate(origin *Square, goal *Square) int {
+var currentDistance float64
+
+//The math definition of distance
+func distanceBetweenTwoPoints(p1, p2 Point) float64 {
 	var (
-		dX       = float64(goal.Position.Row - origin.Position.Row)
-		dY       = float64(goal.Position.Column - origin.Position.Column)
+		dX       = float64(p1.Row - p2.Row)
+		dY       = float64(p1.Column - p2.Column)
 		distance = math.Sqrt(dX*dX + dY*dY)
 	)
+	return distance
+}
 
-	if distance-math.Trunc(distance) > 0.5 {
-		distance = distance + 1.0
+// heuristicCostEstimate for AStar
+func heuristicCostEstimate(origin *Square, goal *Square) float64 {
+	var distance = distanceBetweenTwoPoints(origin.Position, goal.Position)
+
+	if distance >= currentDistance {
+		var min int = 1 << 20
+		for _, neighbor := range origin.Neighbors() { // which is the neighbor nearest to goal with min cost
+			if distanceBetweenTwoPoints(neighbor.Position, goal.Position) < distance && neighbor.Cost() < min {
+				min = neighbor.Cost()
+			}
+		}
+		distance += float64(min)
 	}
-
-	return int(math.Floor(distance))
+	return distance
 }
 
 // getMin is a auxiliary function that return
-func getMin(openSet map[*Square]bool, fScore map[*Square]int) *Square {
+func getMin(openSet map[*Square]bool, fScore map[*Square]float64) *Square {
 	var (
 		best *Square
-		min  int = 1<<30 - 1
+		min  float64 = 1<<30 - 1
 	)
 
 	for j, _ := range openSet {
@@ -38,22 +51,18 @@ func getMin(openSet map[*Square]bool, fScore map[*Square]int) *Square {
 }
 
 // Return `reverse` Path.
-func reconstructPath(cameFrom map[*Square]*Square, current *Square) ([]*Square, int) {
+func reconstructPath(cameFrom map[*Square]*Square, current *Square) []*Square {
 	var path = make([]*Square, 1, 42*42)
-	var duration = int(0)
+
 	path[0] = current
-	duration = current.Cost()
 
 	for next, ok := cameFrom[current]; ok && next != nil; next, ok = cameFrom[next] {
 		path = append(path, next)
-		duration = duration + next.Cost()
+
 		current = next
 	}
 
-	// Fixing
-	duration = duration - current.Cost()
-
-	return path, duration
+	return path
 }
 
 //AStar ...
@@ -62,8 +71,8 @@ func (v *Square) AStar(goal *Square) ([]*Square, int) {
 		closedSet = make(map[*Square]bool)
 		openSet   = map[*Square]bool{v: true}
 		cameFrom  = make(map[*Square]*Square)
-		gScore    = map[*Square]int{v: 0}
-		fScore    = map[*Square]int{v: gScore[v] + heuristicCostEstimate(v, goal)}
+		gScore    = map[*Square]float64{v: 0}
+		fScore    = map[*Square]float64{v: gScore[v] + heuristicCostEstimate(v, goal)}
 	)
 	fmt.Println("we are beginning!")
 	for len(openSet) > 0 {
@@ -71,18 +80,20 @@ func (v *Square) AStar(goal *Square) ([]*Square, int) {
 		var current = getMin(openSet, fScore)
 
 		if current == goal {
-			return reconstructPath(cameFrom, current)
+			return reconstructPath(cameFrom, current), int(gScore[current])
 		}
 
 		delete(openSet, current)
 		closedSet[current] = true
+
+		currentDistance = distanceBetweenTwoPoints(current.Position, goal.Position)
 
 		for _, neighbor := range current.Neighbors() {
 			if neighbor == nil || closedSet[neighbor] {
 				continue
 			}
 
-			GScoreTry := gScore[current] + current.DistanceToNeighbor(neighbor)
+			GScoreTry := gScore[current] + float64(neighbor.Cost())
 
 			neighborInOpenSet := openSet[neighbor]
 

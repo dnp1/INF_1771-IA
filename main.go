@@ -23,10 +23,11 @@ func main() {
 	}
 
 	origin, goals, _ := buildGraphFromEnvironment(&conf)
-
+	var total int
 	for _, goal := range goals {
 		res, duration := origin.AStar(goal)
 		_, _ = res, duration
+		fmt.Println(goal.Position)
 		fmt.Println("[")
 		for _, v := range res {
 			fmt.Println("\t", v.Position, ",", v.Cost(), conf.Map[v.Position.Row][v.Position.Column])
@@ -34,7 +35,22 @@ func main() {
 		fmt.Println("]")
 
 		fmt.Print("Duration:", duration, "\n")
+		total = duration + total
 		origin = goal
-		break
+	}
+
+	for _, s := range conf.Saints {
+		fmt.Println(s)
+	}
+	//initAllegro(&conf)
+	//	fmt.Println("\n\nTotal Duration:", total, "\n")
+
+	achou, resultado := buildGraph(conf.Saints, 720-total, conf.Temples, 0)
+	if !achou {
+		fmt.Println(":-(!")
+		return
+	}
+	for ; resultado != nil; resultado = resultado.nextState {
+		fmt.Println(resultado)
 	}
 }

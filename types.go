@@ -27,14 +27,14 @@ type Ground struct {
 // Temple is a special place in the map with fixed cost to pass through it,
 // Code irrelevante -> the cost are little bite higher than the ground because the temple keep the Gold Knights.
 type Temple struct {
-	Name      string `json:"name"`
-	Dificulty int    `json:"dificulty"`
-	Position  Point  `json:"position"`
+	Name       string `json:"name"`
+	Difficulty int    `json:"difficulty"`
+	Position   Point  `json:"position"`
 }
 
 type Saint struct {
 	Name  string  `json:"name"`
-	Power float64 `json:"power"`
+	Power float32 `json:"power"`
 	Lives int     `json:"lives"`
 }
 
