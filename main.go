@@ -22,16 +22,16 @@ func main() {
 		fmt.Println("Error (parsing JSON)", err)
 	}
 
-	origin, goals, _ := buildGraphFromEnv(&conf)
+	origin, goals, _ := buildGraphFromEnvironment(&conf)
 
 	for _, goal := range goals {
 		res, duration := origin.AStar(goal)
 		_, _ = res, duration
-		fmt.Println('[')
+		fmt.Println("[")
 		for _, v := range res {
-			fmt.Println(v.Position, ",", v.Cost, conf.Map[v.Position.Column][v.Position.Row])
+			fmt.Println("\t", v.Position, ",", v.Cost(), conf.Map[v.Position.Row][v.Position.Column])
 		}
-		fmt.Println(']')
+		fmt.Println("]")
 
 		fmt.Print("Duration:", duration, "\n")
 		origin = goal

@@ -11,34 +11,40 @@ import (
 
 //note: the sintax `json:"id"` bind the identifier in json to the variable in this code
 //example: X uint64 `json:"x"` bind the name the x name in json to X point struct
-
 // Point define a 2-axis coordinate type
 type Point struct {
-	Row    uint64 `json:"row"`
-	Column uint64 `json:"column"`
+	Row    int `json:"row"`
+	Column int `json:"column"`
 }
 
 // Ground is where the characters go by in the map. It has a fixed cost to pass through it
 type Ground struct {
 	Name string `json:"name"`
 	ID   string `json:"id"`
-	Cost int64  `json:"cost"`
+	Cost int    `json:"cost"`
 }
 
 // Temple is a special place in the map with fixed cost to pass through it,
 // Code irrelevante -> the cost are little bite higher than the ground because the temple keep the Gold Knights.
 type Temple struct {
 	Name      string `json:"name"`
-	Dificulty int64  `json:"cost"`
+	Dificulty int    `json:"dificulty"`
 	Position  Point  `json:"position"`
 }
 
-// Environment of the game
+type Saint struct {
+	Name  string  `json:"name"`
+	Power float64 `json:"power"`
+	Lives int     `json:"lives"`
+}
+
+//Environment of the game
 type Environment struct {
 	Start   Point      `json:"start"`
 	End     Point      `json:"end"`
 	Grounds []Ground   `json:"grounds"`
 	Temples []Temple   `json:"temples"`
+	Saints  []Saint    `json:"saints"`
 	Map     [][]string `json:"map"`
 	printed bool
 }
@@ -46,9 +52,9 @@ type Environment struct {
 func (m Environment) String() string {
 	var buffer bytes.Buffer
 	buffer.WriteString("     ")
-	for i := int64(0); i < 2*int64(len(m.Map)); i = i + 1 {
+	for i := int(0); i < 2*int(len(m.Map)); i = i + 1 {
 		if (i % 20) == 0 {
-			buffer.WriteString(strconv.FormatInt(i/2, 10))
+			buffer.WriteString(strconv.FormatInt(int64(i/2), 10))
 		} else {
 			buffer.WriteString(" ")
 		}
@@ -90,8 +96,8 @@ func (m Environment) String() string {
 	return buffer.String()
 }
 
-func clear(amount uint64) {
-	for i := uint64(0); i < amount; i++ {
+func clear(amount int) {
+	for i := int(0); i < amount; i++ {
 		os.Stdout.WriteString("\033[A\033[2K")
 	}
 	// what those below do?
@@ -106,7 +112,7 @@ func clear(amount uint64) {
 func (m *Environment) Print() {
 	dat := []byte(m.String())
 
-	i := uint64(0)
+	i := int(0)
 
 	// work around to get line number
 	strings.Map(func(r rune) rune {
@@ -117,7 +123,7 @@ func (m *Environment) Print() {
 	}, m.String())
 
 	if m.printed {
-		clear(uint64(i))
+		clear(int(i))
 	} else {
 		m.printed = true
 	}
