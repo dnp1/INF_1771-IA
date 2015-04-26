@@ -34,14 +34,23 @@ func main() {
 	//initAllegro(&conf)
 	//	fmt.Println("\n\nTotal Duration:", total, "\n")
 
-	achou, resultado := templesSolution(conf.Saints, float32(conf.AvailableTime-total), conf.Temples)
+	achou, resultado := templesSolution(conf.Saints, conf.AvailableTime-float64(total), conf.Temples)
 
 	if !achou {
 		fmt.Println(":-(!")
 		return
 	}
-	for ; resultado != nil; resultado = resultado.nextState {
-		fmt.Println(resultado)
+	for inx, state := range resultado {
+		if inx == 0 {
+
+		}
+		fmt.Println(state)
+		fmt.Println("\t Vidas:", Lives[*state])
 	}
+
+	//	for i, v := range Lives {
+	//		fmt.Println("k:", i)
+	//		fmt.Println("v:", v)
+	//	}
 
 }

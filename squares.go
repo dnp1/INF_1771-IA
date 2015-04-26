@@ -4,7 +4,7 @@ import "log"
 
 type TempleInfo struct {
 	Name       string
-	Difficulty int
+	Difficulty float64
 }
 type GroundInfo struct {
 	ID   string
