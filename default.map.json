@@ -1,4 +1,5 @@
 {
+	"availableTime": 720,
     "start":{"row": 37, "column": 37},
     "end":  {"row": 4, "column":37},
     "grounds": [

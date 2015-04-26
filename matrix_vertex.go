@@ -28,6 +28,12 @@ const (
 	neighborLEFT   = 3
 )
 
+const (
+	costForTemple = 1
+	costForStart  = 1
+	costForEnd    = 1
+)
+
 //note: the matrix is a Slice , then:
 //get(i,0)-> i*mat.m + 0 -> walks i times the m coluns-in the slice-reaching the (i,j) element
 //get(i,j) -> i*mat.m + j -> walks i times the m coluns-in the slice- and walks j elements, to reach(i,j)element
@@ -124,24 +130,11 @@ func buildGraphFromEnvironment(env *Environment) (*Square, []*Square, *Matrix) {
 		}
 	}
 
-	//filling "destinations" assuming env.Temples are in-order of goalss
+	//filling "destinations" assuming env.Temples are in-order of goals
 	for _, v := range env.Temples {
 		destinations = append(destinations, ref.get(v.Position.Row, v.Position.Column))
 	}
 	destinations = append(destinations, ref.get(env.End.Row, env.End.Column))
 
-	//	for i := 0; i < ref.numOfRows; i++ {
-	//		for j := 0; j < ref.numOfColumns; j++ {
-	//			v := ref.get(i, j)
-	//			var groundType string
-	//			var cost int
-	//			if v.GroundData != nil {
-	//				g := v.GroundData
-	//				groundType = v.GroundData.ID
-	//				cost = v.GroundData.Cost
-	//			}
-	//			fmt.Println(v.Position, cost, groundType)
-	//		}
-	//	}
 	return ref.get(env.Start.Row, env.Start.Column), destinations, ref
 }

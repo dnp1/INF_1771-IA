@@ -74,7 +74,7 @@ func (v *Square) AStar(goal *Square) ([]*Square, int) {
 		gScore    = map[*Square]float64{v: 0}
 		fScore    = map[*Square]float64{v: gScore[v] + heuristicCostEstimate(v, goal)}
 	)
-	fmt.Println("we are beginning!")
+	fmt.Print("")
 	for len(openSet) > 0 {
 
 		var current = getMin(openSet, fScore)
@@ -105,7 +105,6 @@ func (v *Square) AStar(goal *Square) ([]*Square, int) {
 				openSet[neighbor] = true
 			}
 		}
-
 	}
 	return nil, 0
 }

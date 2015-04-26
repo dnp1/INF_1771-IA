@@ -40,13 +40,14 @@ type Saint struct {
 
 //Environment of the game
 type Environment struct {
-	Start   Point      `json:"start"`
-	End     Point      `json:"end"`
-	Grounds []Ground   `json:"grounds"`
-	Temples []Temple   `json:"temples"`
-	Saints  []Saint    `json:"saints"`
-	Map     [][]string `json:"map"`
-	printed bool
+	AvailableTime int        `json:"availableTime"`
+	Start         Point      `json:"start"`
+	End           Point      `json:"end"`
+	Grounds       []Ground   `json:"grounds"`
+	Temples       []Temple   `json:"temples"`
+	Saints        []Saint    `json:"saints"`
+	Map           [][]string `json:"map"`
+	printed       bool
 }
 
 func (m Environment) String() string {
