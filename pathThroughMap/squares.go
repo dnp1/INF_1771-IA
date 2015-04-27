@@ -1,6 +1,9 @@
-package main
+package pathThroughMap
 
-import "log"
+import (
+	e "github.com/daniloanp/IA/environment"
+	"log"
+)
 
 type TempleInfo struct {
 	Name       string
@@ -11,7 +14,7 @@ type GroundInfo struct {
 	Cost int
 }
 type Square struct {
-	Position   Point
+	Position   e.Point
 	TempleData *TempleInfo
 	GroundData *GroundInfo
 	neighbors  []*Square
@@ -26,9 +29,9 @@ func (v *Square) Cost() int {
 	if v.GroundData != nil {
 		return v.GroundData.Cost
 	} else {
-		return 0
+		return 1
 	}
-	return 0
+	return 1
 }
 
 func (v *Square) IsTemple() bool {

@@ -1,6 +1,9 @@
-package main
+package pathThroughMap
 
-import "log"
+import (
+	e "github.com/daniloanp/IA/environment"
+	"log"
+)
 
 //import "fmt"
 
@@ -49,7 +52,7 @@ func (mat *Matrix) set(row int, column int, vertexInfo *Square) {
 	mat.data[row*mat.numOfRows+column] = vertexInfo
 }
 
-func getTempleData(env *Environment, squareID string, row int, column int) *TempleInfo {
+func getTempleData(env *e.Environment, squareID string, row int, column int) *TempleInfo {
 	if squareID != "_" {
 		return nil
 	} // otherwise, must be a  valid Temple
@@ -65,7 +68,7 @@ func getTempleData(env *Environment, squareID string, row int, column int) *Temp
 	return nil
 }
 
-func getGroundData(env *Environment, squareID string, row int, column int) *GroundInfo {
+func getGroundData(env *e.Environment, squareID string, row int, column int) *GroundInfo {
 	if squareID == "_" {
 
 		return nil
@@ -85,7 +88,7 @@ func getGroundData(env *Environment, squareID string, row int, column int) *Grou
 // getOrBuild function return the same as "Matrix.get" but:
 // it building the info case it was nil
 // it need of env to build env
-func getOrBuild(env *Environment, ref *Matrix, row int, column int) *Square {
+func getOrBuild(env *e.Environment, ref *Matrix, row int, column int) *Square {
 	if v := ref.get(row, column); v != nil { // If v already are defined we just return it.
 		return v
 	} // Otherwise, we need build it.
@@ -95,14 +98,14 @@ func getOrBuild(env *Environment, ref *Matrix, row int, column int) *Square {
 		s.GroundData = getGroundData(env, env.Map[row][column], row, column)
 		s.TempleData = getTempleData(env, env.Map[row][column], row, column)
 	}
-	s.Position = Point{Row: row, Column: column}
+	s.Position = e.Point{Row: row, Column: column}
 	s.neighbors = make([]*Square, 4)
 	ref.set(row, column, s)
 	return s
 }
 
 //buildGraphFromEnvironment build a Graph and return the initial and a slice with goals-squares
-func buildGraphFromEnvironment(env *Environment) (*Square, []*Square, *Matrix) {
+func BuildGraphFromEnvironment(env *e.Environment) (*Square, []*Square, *Matrix) {
 	var (
 		ref          = NewMatrix(42, 42)
 		destinations = make([]*Square, 0, len(env.Temples)+1)

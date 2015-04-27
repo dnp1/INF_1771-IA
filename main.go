@@ -3,51 +3,69 @@ package main
 import (
 	"encoding/json" //importing(calling) library json
 	"fmt"
+	e "github.com/daniloanp/IA/environment"
+	walk "github.com/daniloanp/IA/pathThroughMap"
+	fights "github.com/daniloanp/IA/templeFights"
 	"io/ioutil"
+	"time"
 )
 
 func main() {
+	var initialTime = time.Now()
 	content, err := ioutil.ReadFile("default.map.json")
-	//content-> receive the content from default.map.json
-	//err -> receive condRet
+
 	if err != nil {
 		fmt.Print("Error (reading file):", err)
 		return
 	}
 
-	var conf Environment
+	var conf e.Environment
 	err = json.Unmarshal(content, &conf)
 
 	if err != nil {
 		fmt.Println("Error (parsing JSON)", err)
 	}
 
-	origin, goals, _ := buildGraphFromEnvironment(&conf)
+	origin, goals, _ := walk.BuildGraphFromEnvironment(&conf)
 	var total int
 	for _, goal := range goals {
 		res, duration := origin.AStar(goal)
 		_, _ = res, duration
 		total = duration + total
+
+		fmt.Println("\n Inicio:")
+		for i := len(res) - 1; i >= 0; i-- {
+			square := res[i]
+			fmt.Println("\t", square.Position)
+		}
+		fmt.Println("\nCusto para esse trajeto:", duration)
+
 		origin = goal
+
 	}
 
 	//initAllegro(&conf)
-	//	fmt.Println("\n\nTotal Duration:", total, "\n")
+	fmt.Println("\n\nTempo Total para andar no mapa:", total, "\n")
+	fmt.Println("======================x ======================++")
 
-	achou, resultado := templesSolution(conf.Saints, conf.AvailableTime-float64(total), conf.Temples)
+	achou, res := fights.TemplesSolution(conf.Saints, conf.AvailableTime-float64(total), conf.Temples)
 
+	var totalToFight = float64(0)
 	if !achou {
 		fmt.Println(":-(!")
 		return
 	}
-	for inx, state := range resultado {
-		if inx == 0 {
-
-		}
-		fmt.Println(state)
-		fmt.Println("\t Vidas:", Lives[*state])
+	for i := len(res) - 1; i >= 0; i-- {
+		var state = res[i]
+		fmt.Println("\t Quem Lutou pra vir:", fights.StringfyFighters(state.Fighters, conf.Saints))
+		fmt.Println("\t Vidas:", fights.Lives[state])
+		fmt.Println("\t Tempo Gasto pra vir:", state.CostToMe(conf.Saints), "\n\n")
+		totalToFight += state.CostToMe(conf.Saints)
 	}
 
+	fmt.Println("Tempo Total para lutar:", totalToFight, "\n\n")
+
+	fmt.Println("Processing time: ", time.Now().Sub(initialTime))
 	//	for i, v := range Lives {
 	//		fmt.Println("k:", i)
 	//		fmt.Println("v:", v)

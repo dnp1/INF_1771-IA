@@ -1,14 +1,15 @@
-package main
+package pathThroughMap
 
 import (
 	"fmt"
+	e "github.com/daniloanp/IA/environment"
 	"math"
 )
 
 var currentDistance float64
 
 //The math definition of distance
-func distanceBetweenTwoPoints(p1, p2 Point) float64 {
+func distanceBetweenTwoPoints(p1, p2 e.Point) float64 {
 	var (
 		dX       = float64(p1.Row - p2.Row)
 		dY       = float64(p1.Column - p2.Column)
