@@ -103,18 +103,17 @@ func InitAllegro(env *e.Environment, paths [][]*walk.Square, fts []*fights.GameS
 				}
 
 			}
-			var line = 60
+			var line = 50
 			sans, err := font.Builtin()
 			for i := int(1); i <= inx; i++ {
-				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+20, float32(line*i+3), font.ALIGN_LEFT, temples[i-1].Name)
+				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+10, float32(line*(i-1)+3), font.ALIGN_LEFT, temples[i-1].Name)
 				var luta = fts[len(fts)-(i+1)]
-				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+32, float32(line*i+3)+17, font.ALIGN_LEFT, "\tLutadores: "+fights.StringfyFighters(luta.Fighters, saints))
-				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+32, float32(line*i+3)+34, font.ALIGN_LEFT, "\tTempo de Luta: "+strconv.FormatFloat(luta.CostToMe(saints), byte('g'), 3, 64))
+				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+19, float32(line*(i-1)+3)+15, font.ALIGN_LEFT, "\tLutadores: "+fights.StringfyFighters(luta.Fighters, saints))
+				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+10, float32(line*(i-1)+3)+30, font.ALIGN_LEFT, "\tTempo de Luta: "+strconv.FormatFloat(luta.CostToMe(saints), byte('g'), 3, 64))
 
 				if err != nil {
 					log.Fatalln(err)
 				}
-
 			}
 		}
 		paint(0)

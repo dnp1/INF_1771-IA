@@ -188,7 +188,7 @@ func backtrackedAStar(saints []e.Saint, avTime float64) (bool, []*GameState) {
 			if !neighborInOpenSet || GScoreTry < gScore[neighbor] {
 				cameFrom[neighbor] = current
 				gScore[neighbor] = GScoreTry
-				fScore[neighbor] = /*gScore[neighbor] + */ neighbor.Quality(saints)
+				fScore[neighbor] = /*gScore[neighbor] +*/ neighbor.Quality(saints)
 
 				//adding it to openSet
 				openSet[neighbor] = true

@@ -43,12 +43,11 @@ func main() {
 		fmt.Println("\nCusto para esse trajeto:", duration)
 		paths = append(paths, res)
 		origin = goal
-
 	}
 
 	//initAllegro(&conf)
 	fmt.Println("\n\nTempo Total para andar no mapa:", total, "\n")
-	fmt.Println("======================x ======================++")
+	fmt.Println("====================== x ======================")
 
 	achou, res := fights.TemplesSolution(conf.Saints, conf.AvailableTime-float64(total), conf.Temples)
 
