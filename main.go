@@ -4,6 +4,7 @@ import (
 	"encoding/json" //importing(calling) library json
 	"fmt"
 	e "github.com/daniloanp/IA/environment"
+	frontend "github.com/daniloanp/IA/frontend"
 	walk "github.com/daniloanp/IA/pathThroughMap"
 	fights "github.com/daniloanp/IA/templeFights"
 	"io/ioutil"
@@ -28,6 +29,7 @@ func main() {
 
 	origin, goals, _ := walk.BuildGraphFromEnvironment(&conf)
 	var total int
+	var paths = make([][]*walk.Square, 0, len(goals))
 	for _, goal := range goals {
 		res, duration := origin.AStar(goal)
 		_, _ = res, duration
@@ -39,7 +41,7 @@ func main() {
 			fmt.Println("\t", square.Position)
 		}
 		fmt.Println("\nCusto para esse trajeto:", duration)
-
+		paths = append(paths, res)
 		origin = goal
 
 	}
@@ -64,11 +66,8 @@ func main() {
 	}
 
 	fmt.Println("Tempo Total para lutar:", totalToFight, "\n\n")
-
 	fmt.Println("Processing time: ", time.Now().Sub(initialTime))
-	//	for i, v := range Lives {
-	//		fmt.Println("k:", i)
-	//		fmt.Println("v:", v)
-	//	}
+
+	frontend.InitAllegro(&conf, paths, res)
 
 }

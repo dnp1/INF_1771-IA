@@ -28,8 +28,8 @@ func (v *Square) Neighbors() []*Square {
 func (v *Square) Cost() int {
 	if v.GroundData != nil {
 		return v.GroundData.Cost
-	} else {
-		return 1
+	} else if v.TempleData != nil {
+		return 0
 	}
 	return 1
 }
