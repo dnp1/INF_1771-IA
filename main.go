@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	var initialTime = time.Now()
+
 	content, err := ioutil.ReadFile("default.map.json")
 
 	if err != nil {
@@ -26,7 +26,8 @@ func main() {
 	if err != nil {
 		fmt.Println("Error (parsing JSON)", err)
 	}
-
+	
+	var initialTime = time.Now()
 	origin, goals, _ := walk.BuildGraphFromEnvironment(&conf)
 	var total int
 	var paths = make([][]*walk.Square, 0, len(goals))
@@ -65,6 +66,7 @@ func main() {
 	}
 
 	fmt.Println("Tempo Total para lutar:", totalToFight, "\n\n")
+	fmt.Println("Tempo total pra salvar Saori:", totalToFight+float64(total))
 	fmt.Println("Processing time: ", time.Now().Sub(initialTime))
 
 	frontend.InitAllegro(&conf, paths, res)

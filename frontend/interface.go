@@ -43,7 +43,7 @@ func InitAllegro(env *e.Environment, paths [][]*walk.Square, fts []*fights.GameS
 		} else {
 			panic(err)
 		}
-
+		prim.Install()
 		// Create an event queue. All of the event sources we care about should
 		// register themselves to this queue.
 		if eventQueue, err = allegro.CreateEventQueue(); err == nil {
