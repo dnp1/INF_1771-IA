@@ -59,9 +59,9 @@ func main() {
 	for i := len(res) - 1; i >= 0; i-- {
 		var state = res[i]
 		fmt.Println("\t Quem Lutou pra vir:", fights.StringfyFighters(state.Fighters, conf.Saints))
-		fmt.Println("\t Vidas:", fights.Lives[state])
-		fmt.Println("\t Tempo Gasto pra vir:", state.CostToMe(conf.Saints), "\n\n")
-		totalToFight += state.CostToMe(conf.Saints)
+		fmt.Println("\t Vidas:", state.Lifes)
+		fmt.Println("\t Tempo Gasto pra vir:", state.CostToMe(), "\n\n")
+		totalToFight += state.CostToMe()
 	}
 
 	fmt.Println("Tempo Total para lutar:", totalToFight, "\n\n")

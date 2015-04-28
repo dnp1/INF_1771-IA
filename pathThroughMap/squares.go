@@ -29,7 +29,7 @@ func (v *Square) Cost() int {
 	if v.GroundData != nil {
 		return v.GroundData.Cost
 	} else if v.TempleData != nil {
-		return 0
+		return 1
 	}
 	return 1
 }

@@ -108,8 +108,12 @@ func InitAllegro(env *e.Environment, paths [][]*walk.Square, fts []*fights.GameS
 			for i := int(1); i <= inx; i++ {
 				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+10, float32(line*(i-1)+3), font.ALIGN_LEFT, temples[i-1].Name)
 				var luta = fts[len(fts)-(i+1)]
-				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+19, float32(line*(i-1)+3)+15, font.ALIGN_LEFT, "\tLutadores: "+fights.StringfyFighters(luta.Fighters, saints))
-				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+10, float32(line*(i-1)+3)+30, font.ALIGN_LEFT, "\tTempo de Luta: "+strconv.FormatFloat(luta.CostToMe(saints), byte('g'), 3, 64))
+				saints := ""
+				for _, s := range fights.StringfyFighters(luta.Fighters, luta.Context.Saints) {
+					saints += "," + s
+				}
+				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+19, float32(line*(i-1)+3)+15, font.ALIGN_LEFT, saints)
+				font.DrawText(sans, allegro.MapRGB(250, 250, 250), HEIGHT+10, float32(line*(i-1)+3)+30, font.ALIGN_LEFT, "\tTempo de Luta: "+strconv.FormatFloat(luta.CostToMe(), byte('g'), 3, 64))
 
 				if err != nil {
 					log.Fatalln(err)
